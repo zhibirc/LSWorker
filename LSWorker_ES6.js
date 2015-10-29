@@ -1,21 +1,41 @@
 class LSWorker {
-	constructor() {
+	constructor() {}
+	
+	/**
+	 *	Handle error messages.
+	 *	@param {object[]} msg - Type-code pair of an error.
+	 */
+	static getServiceInfo(msg) {
+		const msgs = {
+			unknown: 'Unknown problem.',
+			read: ['Impossible to read data. Keys are undefined.'],
+			write: [],
+			remove: ['Impossible to delete data. Keys are undefined.']
+		};
 		
+		return Array.isArray(msg) && msg.length === 2 ? msgs[msg[0]][msg[1]] : msgs.unknown;
 	}
 	
-	static serviceMsgs = {
-		read: ['Impossible to read data. Keys are undefined.'],
-		write: [],
-		remove: ['Impossible to delete data. Keys are undefined.']
+	/**
+	 *	Set reference to localStorage.
+	 */
+	static setDB() {
+		return localStorage;
 	}
 	
-	static clear = function () {
-		db.clear();
+	/**
+	 *	Clean whole storage.
+	 */
+	static clear() {
+		this.setDB().clear();
 	}
 	
 	read (keys /* Array of keys */) {
+		let _class = this.constructor,
+			db = _class.setDB();
+		
 		if (!Array.isArray(keys) || keys.length === 0) {
-			throw new Error(DBOperate.service.read[0]);
+			throw new Error(_class.getServiceInfo(['read', 0]));
 		}
 		
 		for (var i = 0, aLen = keys.length, ret = {}; i < aLen; i += 1) {
@@ -26,6 +46,8 @@ class LSWorker {
 	}
 	
 	write (data /* Key-value pairs */) {
+		const db = this.constructor.setDB();
+		
 		if (typeof key === 'undefined') {
 			throw new Error('Key is not defined!');
 		}
@@ -33,6 +55,8 @@ class LSWorker {
 	}
 	
 	remove (keys /* Array of keys */) {
+		const db = this.constructor.setDB();
+		
 		if (!Array.isArray(keys) || keys.length === 0) {
 			throw new Error(DBOperate.service.remove[0]);
 		}
