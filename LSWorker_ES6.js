@@ -32,13 +32,14 @@ class LSWorker {
 	
 	read (keys /* Array of keys */) {
 		let _class = this.constructor,
-			db = _class.setDB();
+			db = _class.setDB(),
+			ret = Object.create(null); // Prevent prototypal inheritance of unwanted properties.
 		
 		if (!Array.isArray(keys) || keys.length === 0) {
 			throw new Error(_class.getServiceInfo(['read', 0]));
 		}
 		
-		for (var i = 0, aLen = keys.length, ret = {}; i < aLen; i += 1) {
+		for (var i = 0, aLen = keys.length; i < aLen; i += 1) {
 			ret[keys[i]] = db.getItem(keys[i]);
 		}
 		
@@ -46,19 +47,26 @@ class LSWorker {
 	}
 	
 	write (data /* Key-value pairs */) {
-		const db = this.constructor.setDB();
+		let _class = this.constructor,
+			db = _class.setDB(),
+			hasOwn = Object.prototype.hasOwnProperty,
+			prop;
 		
-		if (typeof key === 'undefined') {
-			throw new Error('Key is not defined!');
+		if (!Array.isArray(data) || data.length === 0) {
+			throw new Error(_class.getServiceInfo(['write', 0]));
 		}
-		db.setItem(this.key, value);
+		
+		for (prop in data) {
+			hasOwn.call(data, prop) && db.setItem(prop, data[prop]);
+		}
 	}
 	
 	remove (keys /* Array of keys */) {
-		const db = this.constructor.setDB();
+		let _class = this.constructor,
+			db = _class.setDB();
 		
 		if (!Array.isArray(keys) || keys.length === 0) {
-			throw new Error(DBOperate.service.remove[0]);
+			throw new Error(_class.getServiceInfo(['remove', 0]));
 		}
 		
 		for (var i = 0, aLen = keys.length; i < aLen; i += 1) {
