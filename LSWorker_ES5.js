@@ -1,47 +1,49 @@
-	function DBOperate() {
-		if (!(this instanceof DBOperate)) {
-			return new DBOperate(key);
+	function LSWorker() {
+		if (!(this instanceof LSWorker)) {
+			return new LSWorker();
 		}
+		
+		this.db = localStorage;
 	}
 	
-	DBOperate.prototype.read = function (keys /* Array of keys */) {
+	LSWorker.prototype.read = function (keys /* Array of keys */) {
 		if (!Array.isArray(keys) || keys.length === 0) {
-			throw new Error(DBOperate.service.read[0]);
+			throw new Error(LSWorker.service.read[0]);
 		}
 		
 		for (var i = 0, aLen = keys.length, ret = {}; i < aLen; i += 1) {
-			ret[keys[i]] = db.getItem(keys[i]);
+			ret[keys[i]] = this.db.getItem(keys[i]);
 		}
 		
 		return ret;
 	};
 		
 		
-	DBOperate.prototype.write = function (data /* Key-value pairs */) {
+	LSWorker.prototype.write = function (data /* Key-value pairs */) {
 		if (typeof key === 'undefined') {
 			throw new Error('Key is not defined!');
 		}
-		db.setItem(this.key, value);
+		this.db.setItem(this.key, value);
 	};
 	
-	DBOperate.prototype.remove = function (keys /* Array of keys */) {
+	LSWorker.prototype.remove = function (keys /* Array of keys */) {
 		if (!Array.isArray(keys) || keys.length === 0) {
-			throw new Error(DBOperate.service.remove[0]);
+			throw new Error(LSWorker.service.remove[0]);
 		}
 		
 		for (var i = 0, aLen = keys.length; i < aLen; i += 1) {
-			db.removeItem(keys[i]);
+			this.db.removeItem(keys[i]);
 		}
 	};
 	
 	
 	/** @static */
-	DBOperate.clear = function () {
-		db.clear();
+	LSWorker.clear = function () {
+		localStorage.clear();
 	};
 	
 	/** @static */
-	DBOperate.service = {
+	LSWorker.service = {
 		read: ['Impossible to read data. Keys are undefined.'],
 		write: [],
 		remove: ['Impossible to delete data. Keys are undefined.']
