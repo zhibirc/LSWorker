@@ -1,3 +1,7 @@
+/**
+ *	@file Interface for functional and flexible working process with localStorage -- ES6 variant.
+ *	@copyright Yaroslav Surilov 2015
+ */
 class LSWorker {
 	constructor() {}
 	
